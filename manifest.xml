@@ -1,0 +1,1308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.microsoft.com/schemas/ThreatModeling/2021">
+  <name>AWS Threat Modeling Template</name>
+  <description>Comprehensive threat modeling template for AWS services and components</description>
+  <validationRules />
+  <supportedStandardProtocols>
+    <supportedStandardProtocol>API Gateway</supportedStandardProtocol>
+    <supportedStandardProtocol>AWS SDK</supportedStandardProtocol>
+    <supportedStandardProtocol>AWS CLI</supportedStandardProtocol>
+    <supportedStandardProtocol>HTTPS</supportedStandardProtocol>
+    <supportedStandardProtocol>SSH</supportedStandardProtocol>
+    <supportedStandardProtocol>VPN</supportedStandardProtocol>
+    <supportedStandardProtocol>Direct Connect</supportedStandardProtocol>
+    <supportedStandardProtocol>SNS</supportedStandardProtocol>
+    <supportedStandardProtocol>SQS</supportedStandardProtocol>
+    <supportedStandardProtocol>Kinesis</supportedStandardProtocol>
+    <supportedStandardProtocol>WebSocket</supportedStandardProtocol>
+  </supportedStandardProtocols>
+  <standardFlowTypes>
+    <standardFlowType>AWS API Call</standardFlowType>
+    <standardFlowType>Data Flow</standardFlowType>
+    <standardFlowType>Authentication</standardFlowType>
+    <standardFlowType>Authorization</standardFlowType>
+    <standardFlowType>Network Traffic</standardFlowType>
+    <standardFlowType>Service-to-Service</standardFlowType>
+    <standardFlowType>User-to-Service</standardFlowType>
+    <standardFlowType>Cross-Account</standardFlowType>
+    <standardFlowType>Cross-Region</standardFlowType>
+  </standardFlowTypes>
+  <properties>
+    <property id="AwsRegion" name="AWS Region" description="AWS Region where the resource is deployed">
+      <values>
+        <value>us-east-1</value>
+        <value>us-east-2</value>
+        <value>us-west-1</value>
+        <value>us-west-2</value>
+        <value>ca-central-1</value>
+        <value>eu-west-1</value>
+        <value>eu-west-2</value>
+        <value>eu-west-3</value>
+        <value>eu-central-1</value>
+        <value>ap-northeast-1</value>
+        <value>ap-northeast-2</value>
+        <value>ap-southeast-1</value>
+        <value>ap-southeast-2</value>
+        <value>ap-south-1</value>
+        <value>sa-east-1</value>
+        <value>Multiple</value>
+        <value>Global</value>
+      </values>
+    </property>
+    <property id="EncryptionAtRest" name="Encryption at Rest" description="Whether the data is encrypted at rest">
+      <values>
+        <value>Yes</value>
+        <value>No</value>
+        <value>Partial</value>
+      </values>
+    </property>
+    <property id="EncryptionInTransit" name="Encryption in Transit" description="Whether the data is encrypted in transit">
+      <values>
+        <value>Yes</value>
+        <value>No</value>
+        <value>Partial</value>
+      </values>
+    </property>
+    <property id="AccessControl" name="Access Control" description="Access control mechanism used">
+      <values>
+        <value>IAM Policies</value>
+        <value>Resource Policies</value>
+        <value>ACLs</value>
+        <value>Security Groups</value>
+        <value>NACLs</value>
+        <value>Multiple</value>
+        <value>None</value>
+      </values>
+    </property>
+    <property id="LoggingEnabled" name="Logging Enabled" description="Whether logging is enabled for this resource">
+      <values>
+        <value>Yes</value>
+        <value>No</value>
+        <value>Partial</value>
+      </values>
+    </property>
+    <property id="PubliclyAccessible" name="Publicly Accessible" description="Whether the resource is publicly accessible">
+      <values>
+        <value>Yes</value>
+        <value>No</value>
+        <value>Conditional</value>
+      </values>
+    </property>
+  </properties>
+  
+  <stencilCategory name="AWS Trust Boundaries" description="AWS Security and Trust Boundaries">
+    <stencil id="AWS_AccountBoundary" name="AWS Account Boundary" description="Boundary between separate AWS accounts">
+      <diagram>
+        <bounds x="0" y="0" width="160" height="100" />
+        <text>[AWS Account]</text>
+      </diagram>
+      <boundary>true</boundary>
+    </stencil>
+    <stencil id="AWS_VpcBoundary" name="VPC Boundary" description="Boundary of a Virtual Private Cloud">
+      <diagram>
+        <bounds x="0" y="0" width="160" height="100" />
+        <text>[VPC]</text>
+      </diagram>
+      <boundary>true</boundary>
+    </stencil>
+    <stencil id="AWS_SubnetBoundary" name="Subnet Boundary" description="Boundary of a subnet within a VPC">
+      <diagram>
+        <bounds x="0" y="0" width="160" height="100" />
+        <text>[Subnet]</text>
+      </diagram>
+      <boundary>true</boundary>
+    </stencil>
+    <stencil id="AWS_SecurityGroupBoundary" name="Security Group Boundary" description="Boundary of a security group">
+      <diagram>
+        <bounds x="0" y="0" width="160" height="100" />
+        <text>[Security Group]</text>
+      </diagram>
+      <boundary>true</boundary>
+    </stencil>
+    <stencil id="AWS_AZBoundary" name="Availability Zone Boundary" description="Boundary of an AWS Availability Zone">
+      <diagram>
+        <bounds x="0" y="0" width="160" height="100" />
+        <text>[Availability Zone]</text>
+      </diagram>
+      <boundary>true</boundary>
+    </stencil>
+    <stencil id="AWS_RegionBoundary" name="Region Boundary" description="Boundary of an AWS Region">
+      <diagram>
+        <bounds x="0" y="0" width="160" height="100" />
+        <text>[Region]</text>
+      </diagram>
+      <boundary>true</boundary>
+    </stencil>
+    <stencil id="AWS_OUBoundary" name="Organizational Unit Boundary" description="Boundary of an AWS Organizational Unit">
+      <diagram>
+        <bounds x="0" y="0" width="160" height="100" />
+        <text>[Organizational Unit]</text>
+      </diagram>
+      <boundary>true</boundary>
+    </stencil>
+    <stencil id="AWS_LandingZoneBoundary" name="Landing Zone Boundary" description="Boundary of an AWS Landing Zone">
+      <diagram>
+        <bounds x="0" y="0" width="160" height="100" />
+        <text>[Landing Zone]</text>
+      </diagram>
+      <boundary>true</boundary>
+    </stencil>
+    <stencil id="AWS_PublicPrivateSubnetBoundary" name="Public/Private Subnet Boundary" description="Boundary between public and private subnets">
+      <diagram>
+        <bounds x="0" y="0" width="160" height="100" />
+        <text>[Public/Private Boundary]</text>
+      </diagram>
+      <boundary>true</boundary>
+    </stencil>
+  </stencilCategory>
+  
+  <stencilCategory name="AWS Compute Services" description="AWS Compute Services including EC2, Lambda, and containers">
+    <stencil id="AWS_EC2" name="Amazon EC2" description="Virtual servers in the cloud">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="EC2" />
+        <text>EC2</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_EC2_CredentialTheft" name="EC2 Credential Theft" category="Spoofing" description="Unauthorized access through stolen EC2 credentials">
+          <mitigations>
+            <mitigation>Implement security groups with minimal inbound rules</mitigation>
+            <mitigation>Use IMDSv2 to prevent SSRF attacks</mitigation>
+            <mitigation>Implement IAM roles for EC2 instead of static credentials</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EC2_MetadataManipulation" name="Instance Metadata Manipulation" category="Tampering" description="Manipulation of EC2 instance metadata service">
+          <mitigations>
+            <mitigation>Implement IMDSv2 with token-based access</mitigation>
+            <mitigation>Restrict access to metadata service at the network level</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EC2_DisabledLogging" name="Disabled Logging" category="Repudiation" description="Disabling of CloudTrail or instance-level logging">
+          <mitigations>
+            <mitigation>Enable CloudTrail logging with log validation</mitigation>
+            <mitigation>Implement CloudWatch Logs agent on instances</mitigation>
+            <mitigation>Use AWS Config to detect logging changes</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EC2_ExposedInstanceData" name="Exposed Instance Data" category="Information Disclosure" description="Sensitive data exposure from EC2 instances">
+          <mitigations>
+            <mitigation>Encrypt sensitive data at rest</mitigation>
+            <mitigation>Implement proper IAM roles and instance profiles</mitigation>
+            <mitigation>Regular security patches and updates</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EC2_ResourceExhaustion" name="Resource Exhaustion" category="Denial of Service" description="Resource exhaustion attacks on EC2 instances">
+          <mitigations>
+            <mitigation>Implement Auto Scaling groups</mitigation>
+            <mitigation>Set appropriate instance size</mitigation>
+            <mitigation>Enable AWS Shield for DDoS protection</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EC2_InstanceProfileAbuse" name="Instance Profile Abuse" category="Elevation of Privilege" description="Abuse of permissions granted to EC2 instance profiles">
+          <mitigations>
+            <mitigation>Implement least privilege for IAM roles</mitigation>
+            <mitigation>Use host-based intrusion detection</mitigation>
+            <mitigation>Regular IAM policy audits</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionAtRest" />
+        <propertyRef propertyId="EncryptionInTransit" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+        <propertyRef propertyId="PubliclyAccessible" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_AutoScaling" name="EC2 Auto Scaling" description="Scale EC2 capacity automatically">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="AutoScaling" />
+        <text>Auto Scaling</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_AutoScaling_PolicyManipulation" name="Auto-scaling Policy Manipulation" category="Tampering" description="Manipulation of auto-scaling policies">
+          <mitigations>
+            <mitigation>Protected scaling policies with IAM controls</mitigation>
+            <mitigation>Monitor changes to scaling configurations</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_AutoScaling_Misconfiguration" name="Auto-scaling Misconfiguration" category="Denial of Service" description="Misconfiguration leading to resource exhaustion or unavailability">
+          <mitigations>
+            <mitigation>Implement scale-in protection</mitigation>
+            <mitigation>Set appropriate min/max instances</mitigation>
+            <mitigation>Monitor scaling events</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="AccessControl" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_Lambda" name="AWS Lambda" description="Serverless functions">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="Lambda" />
+        <text>Lambda</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_Lambda_CodeInjection" name="Function Code Injection" category="Tampering" description="Injection of malicious code into Lambda functions">
+          <mitigations>
+            <mitigation>Function immutability (versioning)</mitigation>
+            <mitigation>Code signing for Lambda</mitigation>
+            <mitigation>Implement CI/CD pipeline security</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_Lambda_SensitiveEnvVars" name="Sensitive Environment Variables" category="Information Disclosure" description="Exposure of sensitive data in Lambda environment variables">
+          <mitigations>
+            <mitigation>Use AWS Secrets Manager or Parameter Store</mitigation>
+            <mitigation>Encrypt environment variables</mitigation>
+            <mitigation>Implement least privilege for Lambda execution role</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_Lambda_OverprivilegedRole" name="Overprivileged Role" category="Elevation of Privilege" description="Lambda function with excessive permissions">
+          <mitigations>
+            <mitigation>Function role least privilege</mitigation>
+            <mitigation>Regular IAM policy audits</mitigation>
+            <mitigation>Permission boundaries for Lambda execution roles</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_ECR" name="Amazon ECR" description="Container registry">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="ECR" />
+        <text>ECR</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_ECR_ImageImpersonation" name="Container Image Impersonation" category="Spoofing" description="Impersonation through malicious container images">
+          <mitigations>
+            <mitigation>Image scanning</mitigation>
+            <mitigation>Implement image signing</mitigation>
+            <mitigation>Use immutable tags</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_ECR_ImageManipulation" name="Container Image Manipulation" category="Tampering" description="Unauthorized manipulation of container images">
+          <mitigations>
+            <mitigation>Implement image scanning</mitigation>
+            <mitigation>Image signing requirements</mitigation>
+            <mitigation>Tag immutability</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_ECR_SensitiveDataInImages" name="Sensitive Data in Images" category="Information Disclosure" description="Inclusion of sensitive data in container images">
+          <mitigations>
+            <mitigation>Image scanning for secrets</mitigation>
+            <mitigation>Use build-time variables</mitigation>
+            <mitigation>Proper secrets management</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="EncryptionAtRest" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_ECS" name="Amazon ECS" description="Container orchestration">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="ECS" />
+        <text>ECS</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_ECS_TaskRoleAbuse" name="Task Role Abuse" category="Spoofing" description="Abuse of ECS task role permissions">
+          <mitigations>
+            <mitigation>Task role least privilege</mitigation>
+            <mitigation>Implementation of task role boundaries</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_ECS_TaskDefinitionManipulation" name="Task Definition Manipulation" category="Tampering" description="Unauthorized modification of ECS task definitions">
+          <mitigations>
+            <mitigation>Protected task definitions</mitigation>
+            <mitigation>Immutable deployment patterns</mitigation>
+            <mitigation>Task definition versioning</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_ECS_ContainerEscape" name="Container Escape" category="Elevation of Privilege" description="Breaking out of container isolation">
+          <mitigations>
+            <mitigation>Runtime monitoring</mitigation>
+            <mitigation>Container hardening</mitigation>
+            <mitigation>Regular security patching</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_EKS" name="Amazon EKS" description="Managed Kubernetes">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="EKS" />
+        <text>EKS</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_EKS_RoleSpoofing" name="Role Spoofing" category="Spoofing" description="Spoofing of Kubernetes RBAC roles">
+          <mitigations>
+            <mitigation>RBAC controls</mitigation>
+            <mitigation>Service account configuration</mitigation>
+            <mitigation>Implement identity federation</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EKS_PodTampering" name="Pod Tampering" category="Tampering" description="Unauthorized modification of Kubernetes pods">
+          <mitigations>
+            <mitigation>Pod security policies</mitigation>
+            <mitigation>AdmissionController enforcement</mitigation>
+            <mitigation>Pod security contexts</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EKS_ContainerEscape" name="Container Escape" category="Elevation of Privilege" description="Breaking out of container isolation">
+          <mitigations>
+            <mitigation>Network policies</mitigation>
+            <mitigation>Container runtime security</mitigation>
+            <mitigation>Regular cluster updates</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+      </properties>
+    </stencil>
+  </stencilCategory>
+  
+  <stencilCategory name="AWS Storage Services" description="AWS Storage Services including S3, EBS, and EFS">
+    <stencil id="AWS_S3" name="Amazon S3" description="Object storage">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="S3" />
+        <text>S3</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_S3_PresignedURLAbuse" name="Pre-signed URL Abuse" category="Spoofing" description="Abuse of pre-signed URLs for unauthorized access">
+          <mitigations>
+            <mitigation>Short-lived pre-signed URLs</mitigation>
+            <mitigation>Restrict URL scope</mitigation>
+            <mitigation>Implement source IP restrictions</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_S3_BucketPolicyModification" name="Bucket Policy Modification" category="Tampering" description="Unauthorized modification of S3 bucket policies">
+          <mitigations>
+            <mitigation>Bucket policy audit</mitigation>
+            <mitigation>Use AWS Config to detect changes</mitigation>
+            <mitigation>AWS CloudTrail for API monitoring</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_S3_DisabledAccessLogging" name="Disabled Access Logging" category="Repudiation" description="Disabling S3 access logging to prevent audit trails">
+          <mitigations>
+            <mitigation>Enable access logging</mitigation>
+            <mitigation>Send logs to separate account</mitigation>
+            <mitigation>AWS Config rule for logging detection</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_S3_PublicBucketAccess" name="Public Bucket Access" category="Information Disclosure" description="Misconfiguration leading to public bucket access">
+          <mitigations>
+            <mitigation>Block public access settings</mitigation>
+            <mitigation>Bucket policy restrictions</mitigation>
+            <mitigation>Regular public access audits</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_S3_BucketFlooding" name="Bucket Flooding" category="Denial of Service" description="Flooding bucket with excessive objects">
+          <mitigations>
+            <mitigation>Implement lifecycle policies</mitigation>
+            <mitigation>S3 bucket quotas</mitigation>
+            <mitigation>Implement request rate monitoring</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_S3_PolicyMisconfiguration" name="S3 Policy Misconfiguration" category="Elevation of Privilege" description="Policy misconfiguration allowing escalation">
+          <mitigations>
+            <mitigation>Regular policy reviews</mitigation>
+            <mitigation>Default encryption</mitigation>
+            <mitigation>Access control audit</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionAtRest" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+        <propertyRef propertyId="PubliclyAccessible" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_EBS" name="Amazon EBS" description="Block storage">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="EBS" />
+        <text>EBS</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_EBS_VolumeTampering" name="Volume Data Tampering" category="Tampering" description="Unauthorized modification of EBS volume data">
+          <mitigations>
+            <mitigation>Default encryption</mitigation>
+            <mitigation>Use of KMS CMKs</mitigation>
+            <mitigation>Volume permissions audit</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EBS_UnencryptedSnapshots" name="Unencrypted Snapshots" category="Information Disclosure" description="Creation of unencrypted EBS snapshots">
+          <mitigations>
+            <mitigation>Snapshot access control</mitigation>
+            <mitigation>Enforce encryption of snapshots</mitigation>
+            <mitigation>Regular snapshot audit</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EBS_SharedSnapshots" name="Shared Snapshots" category="Elevation of Privilege" description="Inappropriate sharing of EBS snapshots">
+          <mitigations>
+            <mitigation>Snapshot sharing policies</mitigation>
+            <mitigation>Regular monitoring of shared snapshots</mitigation>
+            <mitigation>AWS Config rules for snapshot sharing</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionAtRest" />
+        <propertyRef propertyId="AccessControl" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_EFS" name="Amazon EFS" description="Elastic File System">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="EFS" />
+        <text>EFS</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_EFS_FileSystemTampering" name="File System Tampering" category="Tampering" description="Unauthorized modification of EFS file system">
+          <mitigations>
+            <mitigation>Encryption in transit/at rest</mitigation>
+            <mitigation>Mount target security groups</mitigation>
+            <mitigation>IAM authorization for NFS clients</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EFS_ExcessiveMountTargets" name="Excessive Mount Targets" category="Information Disclosure" description="Excessive mount targets creating exposure">
+          <mitigations>
+            <mitigation>Access point restrictions</mitigation>
+            <mitigation>Mount target security group controls</mitigation>
+            <mitigation>IAM policy restrictions</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_EFS_MountTargetMisconfig" name="Mount Target Misconfiguration" category="Elevation of Privilege" description="Misconfiguration of mount targets">
+          <mitigations>
+            <mitigation>Security groups on mount targets</mitigation>
+            <mitigation>EFS access point configuration</mitigation>
+            <mitigation>Regular audit of mount points</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionAtRest" />
+        <propertyRef propertyId="EncryptionInTransit" />
+        <propertyRef propertyId="AccessControl" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_S3Glacier" name="Amazon S3 Glacier" description="Archive storage">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="S3Glacier" />
+        <text>S3 Glacier</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_S3Glacier_VaultLockPolicyTampering" name="Vault Lock Policy Tampering" category="Tampering" description="Tampering with vault lock policies">
+          <mitigations>
+            <mitigation>Vault lock policies</mitigation>
+            <mitigation>IAM controls</mitigation>
+            <mitigation>AWS CloudTrail monitoring</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_S3Glacier_RetrievalPolicyExposure" name="Retrieval Policy Exposure" category="Information Disclosure" description="Exposure of data retrieval policies">
+          <mitigations>
+            <mitigation>Vault access policies</mitigation>
+            <mitigation>Inventory monitoring</mitigation>
+            <mitigation>IAM role restrictions</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionAtRest" />
+        <propertyRef propertyId="AccessControl" />
+      </properties>
+    </stencil>
+  </stencilCategory>
+  
+  <stencilCategory name="AWS Database Services" description="AWS Database Services including RDS, DynamoDB, and more">
+    <stencil id="AWS_RDS" name="Amazon RDS" description="Relational Database Service">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="RDS" />
+        <text>RDS</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_RDS_CredentialTheft" name="Master Credential Theft" category="Spoofing" description="Theft of RDS master credentials">
+          <mitigations>
+            <mitigation>Multi-factor authentication</mitigation>
+            <mitigation>IAM database authentication</mitigation>
+            <mitigation>Rotation of credentials</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_RDS_ParameterGroupTampering" name="Parameter Group Tampering" category="Tampering" description="Unauthorized modification of RDS parameter groups">
+          <mitigations>
+            <mitigation>Parameter group audit</mitigation>
+            <mitigation>Encrypted connections</mitigation>
+            <mitigation>AWS Config for change detection</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_RDS_AuditLoggingDisabled" name="Audit Logging Disabled" category="Repudiation" description="Disabling of database audit logging">
+          <mitigations>
+            <mitigation>Enable audit logging</mitigation>
+            <mitigation>AWS Config rules for logging</mitigation>
+            <mitigation>Automated remediation</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_RDS_SnapshotExposure" name="Snapshot Exposure" category="Information Disclosure" description="Exposure of RDS database snapshots">
+          <mitigations>
+            <mitigation>Private snapshots</mitigation>
+            <mitigation>Snapshot encryption</mitigation>
+            <mitigation>Regular snapshot access audit</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_RDS_ConnectionFlooding" name="Connection Flooding" category="Denial of Service" description="Database connection flooding">
+          <mitigations>
+            <mitigation>Connection limits</mitigation>
+            <mitigation>Connection pooling</mitigation>
+            <mitigation>Multi-AZ deployment</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_RDS_PrivilegeEscalation" name="Database Privilege Escalation" category="Elevation of Privilege" description="Escalation of database user privileges">
+          <mitigations>
+            <mitigation>Database user least privilege</mitigation>
+            <mitigation>Regular privilege audit</mitigation>
+            <mitigation>Database activity monitoring</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionAtRest" />
+        <propertyRef propertyId="EncryptionInTransit" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+        <propertyRef propertyId="PubliclyAccessible" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_DynamoDB" name="Amazon DynamoDB" description="NoSQL Database Service">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="DynamoDB" />
+        <text>DynamoDB</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_DynamoDB_ItemManipulation" name="Item Manipulation" category="Tampering" description="Unauthorized manipulation of DynamoDB items">
+          <mitigations>
+            <mitigation>Point-in-time recovery</mitigation>
+            <mitigation>IAM policy conditions</mitigation>
+            <mitigation>DynamoDB Streams for audit</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_DynamoDB_StreamsDisabled" name="Streams Disabled" category="Repudiation" description="Disabling DynamoDB Streams to evade detection">
+          <mitigations>
+            <mitigation>Automated stream enablement</mitigation>
+            <mitigation>AWS Config rules for stream configuration</mitigation>
+            <mitigation>CloudTrail monitoring for stream changes</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_DynamoDB_ExcessiveIAMPermissions" name="Excessive IAM Permissions" category="Information Disclosure" description="Overly permissive IAM policies for DynamoDB">
+          <mitigations>
+            <mitigation>Fine-grained access control</mitigation>
+            <mitigation>IAM policy conditions</mitigation>
+            <mitigation>Regular IAM policy audit</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_DynamoDB_ThroughputExceeded" name="Throughput Exceeded" category="Denial of Service" description="Denial of service through throughput exhaustion">
+          <mitigations>
+            <mitigation>On-demand capacity mode</mitigation>
+            <mitigation>Auto-scaling for provisioned tables</mitigation>
+            <mitigation>Request throttling at application level</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionAtRest" />
+        <propertyRef propertyId="AccessControl" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_Aurora" name="Amazon Aurora" description="MySQL/PostgreSQL-compatible database">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="Aurora" />
+        <text>Aurora</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_Aurora_CredentialTheft" name="Master Credential Theft" category="Spoofing" description="Theft of Aurora master credentials">
+          <mitigations>
+            <mitigation>IAM authentication</mitigation>
+            <mitigation>Encryption of connections</mitigation>
+            <mitigation>Regular credential rotation</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_Aurora_SnapshotExposure" name="Snapshot Exposure" category="Information Disclosure" description="Exposure of Aurora database snapshots">
+          <mitigations>
+            <mitigation>Encryption of snapshots</mitigation>
+            <mitigation>Snapshot access controls</mitigation>
+            <mitigation>Regular audit of snapshot shares</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_Aurora_RoleEscalation" name="Database Role Escalation" category="Elevation of Privilege" description="Escalation of database role privileges">
+          <mitigations>
+            <mitigation>Database activity monitoring</mitigation>
+            <mitigation>Least privilege for database roles</mitigation>
+            <mitigation>Regular privilege audit</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionAtRest" />
+        <propertyRef propertyId="EncryptionInTransit" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+        <propertyRef propertyId="PubliclyAccessible" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_ElastiCache" name="Amazon ElastiCache" description="In-memory caching service">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="ElastiCache" />
+        <text>ElastiCache</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_ElastiCache_AuthTokenTheft" name="AUTH Token Theft" category="Spoofing" description="Theft of ElastiCache AUTH tokens">
+          <mitigations>
+            <mitigation>Transit encryption</mitigation>
+            <mitigation>AUTH token rotation</mitigation>
+            <mitigation>Network isolation</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_ElastiCache_ParameterGroupManipulation" name="Parameter Group Manipulation" category="Tampering" description="Manipulation of cache parameter groups">
+          <mitigations>
+            <mitigation>Parameter group audit</mitigation>
+            <mitigation>Change monitoring</mitigation>
+            <mitigation>Security group restrictions</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_ElastiCache_RedisCommandsExposure" name="Redis Commands Exposure" category="Information Disclosure" description="Exposure of sensitive Redis commands">
+          <mitigations>
+            <mitigation>AUTH token requirement</mitigation>
+            <mitigation>Security groups for access control</mitigation>
+            <mitigation>VPC isolation</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionInTransit" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="PubliclyAccessible" />
+      </properties>
+    </stencil>
+  </stencilCategory>
+  
+  <stencilCategory name="AWS Networking Services" description="AWS Networking Services including VPC, CloudFront, and Route 53">
+    <stencil id="AWS_VPC" name="Amazon VPC" description="Virtual Private Cloud">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="VPC" />
+        <text>VPC</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_VPC_RouteTableManipulation" name="Route Table Manipulation" category="Tampering" description="Unauthorized modification of VPC route tables">
+          <mitigations>
+            <mitigation>Protected route tables</mitigation>
+            <mitigation>AWS Config rules for route changes</mitigation>
+            <mitigation>CloudTrail monitoring</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_VPC_SecurityGroupMisconfiguration" name="NACL/SG Misconfiguration" category="Information Disclosure" description="Network access control and security group misconfiguration">
+          <mitigations>
+            <mitigation>SG/NACL monitoring</mitigation>
+            <mitigation>Regular security group audits</mitigation>
+            <mitigation>Default deny policies</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_VPC_ARPIPSpoofing" name="ARP/IP Spoofing" category="Denial of Service" description="Address spoofing attacks within VPC">
+          <mitigations>
+            <mitigation>Flow logs</mitigation>
+            <mitigation>Traffic inspection</mitigation>
+            <mitigation>Network ACL rules</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_CloudFront" name="Amazon CloudFront" description="Content Delivery Network">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="CloudFront" />
+        <text>CloudFront</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_CloudFront_OAITheft" name="Origin Access Identity Theft" category="Spoofing" description="Theft of CloudFront Origin Access Identity">
+          <mitigations>
+            <mitigation>Origin access identities</mitigation>
+            <mitigation>Regular key rotation</mitigation>
+            <mitigation>Origin custom headers</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_CloudFront_DistributionConfigTampering" name="Distribution Config Tampering" category="Tampering" description="Unauthorized changes to CloudFront distributions">
+          <mitigations>
+            <mitigation>Field-level encryption</mitigation>
+            <mitigation>Distribution configuration monitoring</mitigation>
+            <mitigation>AWS Config rules</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_CloudFront_OriginOverload" name="Origin Overload" category="Denial of Service" description="Overloading origin through CloudFront">
+          <mitigations>
+            <mitigation>WAF integration</mitigation>
+            <mitigation>Shield Advanced</mitigation>
+            <mitigation>Origin failover configuration</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionInTransit" />
+        <propertyRef propertyId="LoggingEnabled" />
+        <propertyRef propertyId="PubliclyAccessible" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_Route53" name="Amazon Route 53" description="Domain Name System">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="Route53" />
+        <text>Route 53</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_Route53_DomainHijacking" name="Domain Hijacking" category="Spoofing" description="Unauthorized domain transfer or takeover">
+          <mitigations>
+            <mitigation>DNSSEC</mitigation>
+            <mitigation>Domain locking</mitigation>
+            <mitigation>Registrar security features</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_Route53_RecordSetManipulation" name="Record Set Manipulation" category="Tampering" description="Unauthorized changes to Route 53 record sets">
+          <mitigations>
+            <mitigation>Record set protection</mitigation>
+            <mitigation>CloudTrail monitoring</mitigation>
+            <mitigation>Access control for DNS changes</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_Route53_DNSAmplification" name="DNS Amplification" category="Denial of Service" description="DNS amplification attacks">
+          <mitigations>
+            <mitigation>Health checks</mitigation>
+            <mitigation>AWS Shield integration</mitigation>
+            <mitigation>Response rate limiting</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+        <propertyRef propertyId="PubliclyAccessible" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_APIGateway" name="Amazon API Gateway" description="API Management">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="APIGateway" />
+        <text>API Gateway</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_APIGateway_APIKeyTheft" name="API Key Theft" category="Spoofing" description="Theft of API Gateway API keys">
+          <mitigations>
+            <mitigation>Lambda authorizers</mitigation>
+            <mitigation>JWT/OAuth authentication</mitigation>
+            <mitigation>API key rotation</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_APIGateway_ConfigTampering" name="API Config Tampering" category="Tampering" description="Unauthorized changes to API configuration">
+          <mitigations>
+            <mitigation>Request validation</mitigation>
+            <mitigation>Config change monitoring</mitigation>
+            <mitigation>API deployment stages</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_APIGateway_SecretsExposure" name="API Secrets Exposure" category="Information Disclosure" description="Exposure of API secrets">
+          <mitigations>
+            <mitigation>Secrets Manager integration</mitigation>
+            <mitigation>X-Ray for request tracing</mitigation>
+            <mitigation>Response data filtering</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_APIGateway_RequestFlooding" name="Request Flooding" category="Denial of Service" description="API request flooding">
+          <mitigations>
+            <mitigation>Throttling</mitigation>
+            <mitigation>Usage plans</mitigation>
+            <mitigation>WAF integration</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionInTransit" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+        <propertyRef propertyId="PubliclyAccessible" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_ELB" name="Elastic Load Balancing" description="Load Balancer">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="ELB" />
+        <text>ELB</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_ELB_CertificateTheft" name="SSL Certificate Theft" category="Spoofing" description="Theft of SSL certificates used by load balancer">
+          <mitigations>
+            <mitigation>TLS termination</mitigation>
+            <mitigation>ACM certificate management</mitigation>
+            <mitigation>Certificate rotation</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_ELB_ListenerConfiguration" name="Listener Configuration" category="Tampering" description="Unauthorized changes to listener configuration">
+          <mitigations>
+            <mitigation>Security policies</mitigation>
+            <mitigation>CloudTrail monitoring</mitigation>
+            <mitigation>Config rules for ELB</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_ELB_ConnectionFlooding" name="Connection Flooding" category="Denial of Service" description="Load balancer connection flooding">
+          <mitigations>
+            <mitigation>Shield integration</mitigation>
+            <mitigation>Auto Scaling for backend capacity</mitigation>
+            <mitigation>Connection draining settings</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionInTransit" />
+        <propertyRef propertyId="LoggingEnabled" />
+        <propertyRef propertyId="PubliclyAccessible" />
+      </properties>
+    </stencil>
+  </stencilCategory>
+  
+  <stencilCategory name="AWS Security Services" description="AWS Security, Identity &amp; Compliance Services">
+    <stencil id="AWS_IAM" name="AWS IAM" description="Identity and Access Management">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="IAM" />
+        <text>IAM</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_IAM_CredentialTheft" name="Credential Theft" category="Spoofing" description="Theft of IAM credentials">
+          <mitigations>
+            <mitigation>MFA for all users</mitigation>
+            <mitigation>Key rotation</mitigation>
+            <mitigation>Temporary credentials</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_IAM_PolicyManipulation" name="Policy Manipulation" category="Tampering" description="Unauthorized changes to IAM policies">
+          <mitigations>
+            <mitigation>Policy conditions</mitigation>
+            <mitigation>SCP oversight</mitigation>
+            <mitigation>CloudTrail monitoring</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_IAM_DeletedPolicyChanges" name="Deleted Policy Changes" category="Repudiation" description="Hiding evidence of policy changes">
+          <mitigations>
+            <mitigation>CloudTrail protection</mitigation>
+            <mitigation>Cross-account logging</mitigation>
+            <mitigation>AWS Config for IAM</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_IAM_ExcessivePermissions" name="Excessive Permissions" category="Information Disclosure" description="Overly permissive IAM policies">
+          <mitigations>
+            <mitigation>Least privilege</mitigation>
+            <mitigation>IAM Access Analyzer</mitigation>
+            <mitigation>Permission boundaries</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_IAM_PrivilegeEscalation" name="Privilege Escalation" category="Elevation of Privilege" description="Exploiting IAM misconfigurations to escalate privileges">
+          <mitigations>
+            <mitigation>Regular policy audits</mitigation>
+            <mitigation>Permission boundaries</mitigation>
+            <mitigation>IAM Access Analyzer</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="LoggingEnabled" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_Cognito" name="Amazon Cognito" description="User Directory">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="Cognito" />
+        <text>Cognito</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_Cognito_UserPoolCredentialTheft" name="User Pool Credential Theft" category="Spoofing" description="Theft of Cognito user credentials">
+          <mitigations>
+            <mitigation>MFA</mitigation>
+            <mitigation>Advanced security features</mitigation>
+            <mitigation>Token expiration</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_Cognito_IdentityPoolManipulation" name="Identity Pool Manipulation" category="Tampering" description="Unauthorized changes to identity pools">
+          <mitigations>
+            <mitigation>Identity verification</mitigation>
+            <mitigation>Authorized providers only</mitigation>
+            <mitigation>Role-based access control</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_Cognito_UnauthorizedAccess" name="Unauthorized Access" category="Information Disclosure" description="Unauthorized access to user data">
+          <mitigations>
+            <mitigation>Access control</mitigation>
+            <mitigation>Token validation</mitigation>
+            <mitigation>Scope limitations</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionInTransit" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_WAF" name="AWS WAF" description="Web Application Firewall">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="WAF" />
+        <text>WAF</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_WAF_RuleManipulation" name="Rule Manipulation" category="Tampering" description="Unauthorized changes to WAF rules">
+          <mitigations>
+            <mitigation>Protected rule sets</mitigation>
+            <mitigation>Change monitoring</mitigation>
+            <mitigation>Rule versioning</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_WAF_RuleBypass" name="Rule Bypass" category="Information Disclosure" description="Bypassing WAF rules for unauthorized access">
+          <mitigations>
+            <mitigation>Logging of all requests</mitigation>
+            <mitigation>Monitoring for evasion techniques</mitigation>
+            <mitigation>Regular rule updates</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="LoggingEnabled" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_KMS" name="AWS KMS" description="Key Management Service">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="KMS" />
+        <text>KMS</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_KMS_KeyMaterialTheft" name="Key Material Theft" category="Spoofing" description="Theft of KMS key material">
+          <mitigations>
+            <mitigation>CMK rotation</mitigation>
+            <mitigation>HSM backing</mitigation>
+            <mitigation>Strict key usage policies</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_KMS_KeyPolicyTampering" name="Key Policy Tampering" category="Tampering" description="Unauthorized changes to key policies">
+          <mitigations>
+            <mitigation>Key policies</mitigation>
+            <mitigation>CloudTrail monitoring</mitigation>
+            <mitigation>IAM policy restrictions</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_KMS_ExcessiveKeyPermissions" name="Excessive Key Permissions" category="Elevation of Privilege" description="Overly permissive key policies">
+          <mitigations>
+            <mitigation>Monitoring of key operations</mitigation>
+            <mitigation>Regular key policy review</mitigation>
+            <mitigation>Least privilege for key users</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_SecretsManager" name="AWS Secrets Manager" description="Secrets Storage">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="SecretsManager" />
+        <text>Secrets Manager</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_SecretsManager_SecretValueTheft" name="Secret Value Theft" category="Spoofing" description="Theft of secret values">
+          <mitigations>
+            <mitigation>Automatic rotation</mitigation>
+            <mitigation>Encryption of secrets</mitigation>
+            <mitigation>VPC endpoints for access</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_SecretsManager_SecretVersionTampering" name="Secret Version Tampering" category="Tampering" description="Unauthorized changes to secret versions">
+          <mitigations>
+            <mitigation>Version history</mitigation>
+            <mitigation>Resource policies</mitigation>
+            <mitigation>CloudTrail monitoring</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_SecretsManager_ExcessiveAccess" name="Excessive Access" category="Information Disclosure" description="Overly permissive access to secrets">
+          <mitigations>
+            <mitigation>IAM policies with conditions</mitigation>
+            <mitigation>Resource-based policies</mitigation>
+            <mitigation>Access auditing</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="EncryptionAtRest" />
+        <propertyRef propertyId="AccessControl" />
+        <propertyRef propertyId="LoggingEnabled" />
+      </properties>
+    </stencil>
+    
+    <stencil id="AWS_GuardDuty" name="Amazon GuardDuty" description="Threat Detection">
+      <diagram>
+        <bounds x="0" y="0" width="100" height="100" />
+        <icon id="GuardDuty" />
+        <text>GuardDuty</text>
+      </diagram>
+      <threats>
+        <threat id="AWS_GuardDuty_DetectorTampering" name="Detector Tampering" category="Tampering" description="Tampering with GuardDuty detectors">
+          <mitigations>
+            <mitigation>Organization-level enablement</mitigation>
+            <mitigation>Detector configuration monitoring</mitigation>
+            <mitigation>Detective controls</mitigation>
+          </mitigations>
+        </threat>
+        <threat id="AWS_GuardDuty_FindingSuppression" name="Finding Suppression" category="Repudiation" description="Suppression of GuardDuty findings">
+          <mitigations>
+            <mitigation>Finding protection</mitigation>
+            <mitigation>Monitoring of suppression rules</mitigation>
+            <mitigation>Cross-account finding aggregation</mitigation>
+          </mitigations>
+        </threat>
+      </threats>
+      <properties>
+        <propertyRef propertyId="AwsRegion" />
+        <propertyRef propertyId="AccessControl" />
+      </properties>
+    </stencil>
+  </stencilCategory>
+  
+  <genericThreats>
+    <!-- Spoofing Threats -->
+    <genericThreat id="AWS_Generic_CredentialTheft" name="AWS Credential Theft" category="Spoofing" description="Theft or unauthorized access to AWS credentials">
+      <mitigations>
+        <mitigation>Implement multi-factor authentication for all users</mitigation>
+        <mitigation>Use temporary credentials where possible</mitigation>
+        <mitigation>Rotate access keys regularly</mitigation>
+        <mitigation>Implement strong password policies</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <genericThreat id="AWS_Generic_AccountHijacking" name="AWS Account Hijacking" category="Spoofing" description="Hijacking of AWS account access">
+      <mitigations>
+        <mitigation>Enable multi-factor authentication</mitigation>
+        <mitigation>Monitor for unusual account activity</mitigation>
+        <mitigation>Implement AWS Organizations with SCPs</mitigation>
+        <mitigation>Use AWS CloudTrail to monitor all API activity</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <genericThreat id="AWS_Generic_CrossAccountRoleAssumption" name="Cross-Account Role Assumption Attack" category="Spoofing" description="Unauthorized cross-account role assumption">
+      <mitigations>
+        <mitigation>Implement strict conditions in trust policies</mitigation>
+        <mitigation>Regularly audit cross-account roles</mitigation>
+        <mitigation>Set appropriate session durations</mitigation>
+        <mitigation>Monitor role assumption events</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <!-- Tampering Threats -->
+    <genericThreat id="AWS_Generic_ResourcePolicyTampering" name="Resource Policy Tampering" category="Tampering" description="Unauthorized modification of resource policies">
+      <mitigations>
+        <mitigation>Monitor policy changes with CloudTrail</mitigation>
+        <mitigation>Implement AWS Config rules for policy configuration</mitigation>
+        <mitigation>Use SCPs to prevent policy modifications</mitigation>
+        <mitigation>Implement automated remediation for policy changes</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <genericThreat id="AWS_Generic_InfrastructureAsCodeTampering" name="Infrastructure as Code Tampering" category="Tampering" description="Tampering with CloudFormation templates or other IaC">
+      <mitigations>
+        <mitigation>Implement code signing for templates</mitigation>
+        <mitigation>Use drift detection</mitigation>
+        <mitigation>Implement secure CI/CD pipelines</mitigation>
+        <mitigation>Template validation before deployment</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <!-- Repudiation Threats -->
+    <genericThreat id="AWS_Generic_LoggingDisabled" name="AWS Logging Disabled" category="Repudiation" description="Disabling or tampering with AWS logging services">
+      <mitigations>
+        <mitigation>Enable CloudTrail in all regions with log validation</mitigation>
+        <mitigation>Send logs to a dedicated security account</mitigation>
+        <mitigation>Implement CloudTrail log integrity validation</mitigation>
+        <mitigation>Set up alerts for logging configuration changes</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <genericThreat id="AWS_Generic_AuditTrailDeletion" name="Audit Trail Deletion" category="Repudiation" description="Deletion or tampering of AWS audit trails">
+      <mitigations>
+        <mitigation>Enable MFA Delete for S3 logging buckets</mitigation>
+        <mitigation>Implement cross-account logging</mitigation>
+        <mitigation>Configure S3 object lock for log files</mitigation>
+        <mitigation>Monitor for log deletion events</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <!-- Information Disclosure Threats -->
+    <genericThreat id="AWS_Generic_MisconfiguredResourceAccess" name="Misconfigured Resource Access" category="Information Disclosure" description="Information exposure through misconfigured resources">
+      <mitigations>
+        <mitigation>Implement default deny policies</mitigation>
+        <mitigation>Use AWS IAM Access Analyzer</mitigation>
+        <mitigation>Regular security assessments</mitigation>
+        <mitigation>Implement resource tagging and access policies</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <genericThreat id="AWS_Generic_SensitiveDataExposure" name="Sensitive Data Exposure" category="Information Disclosure" description="Exposure of sensitive data stored in AWS services">
+      <mitigations>
+        <mitigation>Implement encryption at rest for all services</mitigation>
+        <mitigation>Use Amazon Macie for sensitive data discovery</mitigation>
+        <mitigation>Implement proper key management with AWS KMS</mitigation>
+        <mitigation>Regular data access auditing</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <!-- Denial of Service Threats -->
+    <genericThreat id="AWS_Generic_ResourceExhaustion" name="Resource Exhaustion" category="Denial of Service" description="Denial of service through AWS resource exhaustion">
+      <mitigations>
+        <mitigation>Implement AWS Shield for DDoS protection</mitigation>
+        <mitigation>Use Auto Scaling for workloads</mitigation>
+        <mitigation>Implement appropriate throttling and quotas</mitigation>
+        <mitigation>Design for resilience across availability zones</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <genericThreat id="AWS_Generic_APIRateLimiting" name="API Rate Limiting Bypass" category="Denial of Service" description="Bypassing API rate limits for DoS attacks">
+      <mitigations>
+        <mitigation>Implement throttling at multiple layers</mitigation>
+        <mitigation>Monitor API usage patterns</mitigation>
+        <mitigation>Implement circuit breakers in applications</mitigation>
+        <mitigation>Use AWS WAF rate-based rules</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <!-- Elevation of Privilege Threats -->
+    <genericThreat id="AWS_Generic_PrivilegeEscalation" name="AWS Privilege Escalation" category="Elevation of Privilege" description="Escalation of privileges within AWS">
+      <mitigations>
+        <mitigation>Implement least privilege principle</mitigation>
+        <mitigation>Use permission boundaries</mitigation>
+        <mitigation>Regular IAM policy reviews</mitigation>
+        <mitigation>Use IAM Access Analyzer to identify unintended access</mitigation>
+      </mitigations>
+    </genericThreat>
+    
+    <genericThreat id="AWS_Generic_RoleChaining" name="Role Chaining" category="Elevation of Privilege" description="Chaining roles to gain higher permissions">
+      <mitigations>
+        <mitigation>Limit role assumption capabilities</mitigation>
+        <mitigation>Implement AWS Organizations SCPs</mitigation>
+        <mitigation>Monitor for suspicious role assumption patterns</mitigation>
+        <mitigation>Implement role assumption constraints</mitigation>
+      </mitigations>
+    </genericThreat>
+  </genericThreats>
+  
+  <defaultMigrations>
+    <defaultMigration category="Spoofing">
+      <mitigation>Implement multi-factor authentication</mitigation>
+      <mitigation>Use strong authentication mechanisms</mitigation>
+      <mitigation>Implement the principle of least privilege</mitigation>
+      <mitigation>Rotate credentials regularly</mitigation>
+    </defaultMigration>
+    <defaultMigration category="Tampering">
+      <mitigation>Implement integrity checking</mitigation>
+      <mitigation>Use encryption for sensitive data</mitigation>
+      <mitigation>Implement strong change control procedures</mitigation>
+      <mitigation>Use version control and immutable infrastructure</mitigation>
+    </defaultMigration>
+    <defaultMigration category="Repudiation">
+      <mitigation>Enable comprehensive logging</mitigation>
+      <mitigation>Implement secure and tamper-proof logs</mitigation>
+      <mitigation>Use digital signatures for critical operations</mitigation>
+      <mitigation>Implement non-repudiation controls</mitigation>
+    </defaultMigration>
+    <defaultMigration category="Information Disclosure">
+      <mitigation>Encrypt sensitive data at rest and in transit</mitigation>
+      <mitigation>Implement proper access controls</mitigation>
+      <mitigation>Regularly scan for unintended data exposure</mitigation>
+      <mitigation>Implement data classification and handling procedures</mitigation>
+    </defaultMigration>
+    <defaultMigration category="Denial of Service">
+      <mitigation>Implement autoscaling</mitigation>
+      <mitigation>Use appropriate throttling and quotas</mitigation>
+      <mitigation>Design for resilience and fault tolerance</mitigation>
+      <mitigation>Implement DDoS protection</mitigation>
+    </defaultMigration>
+    <defaultMigration category="Elevation of Privilege">
+      <mitigation>Follow the principle of least privilege</mitigation>
+      <mitigation>Implement strong access controls</mitigation>
+      <mitigation>Regular privilege reviews and audits</mitigation>
+      <mitigation>Use permission boundaries and service control policies</mitigation>
+    </defaultMigration>
+  </defaultMigrations>
+</template> 
